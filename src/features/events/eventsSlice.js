@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { searchEvents } from '../../services/ticketmaster'
+import { getCategories, searchEvents } from '../../services/ticketmaster'
 
 const initialState = {
   list: {
@@ -14,6 +14,17 @@ const initialState = {
     status: 'idle',
     error: null,
   },
+  categories: {
+    items: [],
+    status: 'idle',
+    error: null,
+  },
+}
+
+// Load cached data only once: skip while a request is running or after success.
+const notLoadedYet = (key) => (_, { getState }) => {
+  const { status } = getState().events[key]
+  return status !== 'loading' && status !== 'succeeded'
 }
 
 export const fetchEvents = createAsyncThunk(
@@ -37,13 +48,19 @@ export const fetchUpcomingEvents = createAsyncThunk(
       return rejectWithValue(err.message)
     }
   },
-  {
-    // Home page data is cached: don't refetch while loading or once loaded.
-    condition: (_, { getState }) => {
-      const { status } = getState().events.upcoming
-      return status !== 'loading' && status !== 'succeeded'
-    },
+  { condition: notLoadedYet('upcoming') },
+)
+
+export const fetchCategories = createAsyncThunk(
+  'events/fetchCategories',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await getCategories()
+    } catch (err) {
+      return rejectWithValue(err.message)
+    }
   },
+  { condition: notLoadedYet('categories') },
 )
 
 const eventsSlice = createSlice({
@@ -81,10 +98,23 @@ const eventsSlice = createSlice({
         state.upcoming.status = 'failed'
         state.upcoming.error = action.payload ?? 'Could not load upcoming events.'
       })
+      .addCase(fetchCategories.pending, (state) => {
+        state.categories.status = 'loading'
+        state.categories.error = null
+      })
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.categories.status = 'succeeded'
+        state.categories.items = action.payload
+      })
+      .addCase(fetchCategories.rejected, (state, action) => {
+        state.categories.status = 'failed'
+        state.categories.error = action.payload ?? 'Could not load categories.'
+      })
   },
 })
 
 export const selectEventList = (state) => state.events.list
 export const selectUpcomingEvents = (state) => state.events.upcoming
+export const selectCategories = (state) => state.events.categories
 
 export default eventsSlice.reducer
