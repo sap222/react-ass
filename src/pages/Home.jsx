@@ -1,19 +1,27 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import CategoryChips from '../components/CategoryChips'
 import ErrorMessage from '../components/ErrorMessage'
 import EventGrid from '../components/EventGrid'
 import { selectCurrentUser } from '../features/auth/authSlice'
-import { fetchUpcomingEvents, selectUpcomingEvents } from '../features/events/eventsSlice'
+import {
+  fetchCategories,
+  fetchUpcomingEvents,
+  selectCategories,
+  selectUpcomingEvents,
+} from '../features/events/eventsSlice'
 import './Home.css'
 
 function Home() {
   const dispatch = useDispatch()
   const user = useSelector(selectCurrentUser)
   const upcoming = useSelector(selectUpcomingEvents)
+  const categories = useSelector(selectCategories)
 
   useEffect(() => {
     dispatch(fetchUpcomingEvents())
+    dispatch(fetchCategories())
   }, [dispatch])
 
   return (
@@ -44,6 +52,19 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {categories.items.length > 0 && (
+        <section className="container home-section">
+          <div className="section-header">
+            <h2>Browse by category</h2>
+          </div>
+          <CategoryChips
+            categories={categories.items}
+            showAll={false}
+            getLink={(id) => `/events?segmentId=${id}`}
+          />
+        </section>
+      )}
 
       <section className="container home-section">
         <div className="section-header">
