@@ -1,9 +1,12 @@
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { selectIsRegistered } from '../features/registrations/registrationsSlice'
 import { formatEventTime, formatLocation, getDateBadge } from '../utils/format'
 import './EventCard.css'
 
 function EventCard({ event }) {
   const badge = getDateBadge(event)
+  const isRegistered = useSelector((state) => selectIsRegistered(state, event.id))
 
   return (
     <article className="event-card">
@@ -19,6 +22,7 @@ function EventCard({ event }) {
             <strong>{badge.day}</strong>
           </div>
           {event.segment && <span className="event-card-chip">{event.segment}</span>}
+          {isRegistered && <span className="event-card-registered">✓ Registered</span>}
         </div>
 
         <div className="event-card-body">
