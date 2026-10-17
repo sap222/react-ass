@@ -67,3 +67,14 @@ export function formatAddress(venue) {
     .filter(Boolean)
     .join(', ')
 }
+
+// Exact UTC start when known; otherwise treat the event as lasting all of its local day.
+export function getEventTimestamp(event) {
+  if (event.dateTime) return Date.parse(event.dateTime)
+  if (event.localDate) return parseLocalDate(event.localDate).getTime() + 24 * 60 * 60 * 1000 - 1
+  return Number.POSITIVE_INFINITY
+}
+
+export function isPastEvent(event) {
+  return getEventTimestamp(event) < Date.now()
+}
