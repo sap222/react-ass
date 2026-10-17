@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import GuestRoute from './components/GuestRoute'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
+import EventDetails from './pages/EventDetails'
 import Events from './pages/Events'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -15,6 +16,7 @@ function App() {
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="events" element={<Events />} />
+        <Route path="events/:id" element={<EventDetails />} />
 
         <Route element={<GuestRoute />}>
           <Route path="login" element={<Login />} />
