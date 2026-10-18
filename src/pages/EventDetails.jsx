@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import DetailItem from '../components/DetailItem'
 import ErrorMessage from '../components/ErrorMessage'
 import Loader from '../components/Loader'
+import RegisterButton from '../components/RegisterButton'
 import ShareButton from '../components/ShareButton'
 import StatusBadge from '../components/StatusBadge'
 import { fetchEventDetails, selectEventDetails } from '../features/events/eventsSlice'
@@ -191,6 +192,7 @@ function EventDetails() {
             <p className="details-cta-date">
               {formatEventDate(event)} · {formatEventTime(event)}
             </p>
+            <RegisterButton event={event} />
             {event.url && (
               <a href={event.url} target="_blank" rel="noreferrer" className="btn btn-outline btn-block">
                 Buy tickets on Ticketmaster ↗
