@@ -2,12 +2,16 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { logout, selectCurrentUser } from '../features/auth/authSlice'
+import { selectUserRegistrations } from '../features/registrations/registrationsSlice'
+import { isPastEvent } from '../utils/format'
 import './Navbar.css'
 
 function Navbar() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(selectCurrentUser)
+  const registrations = useSelector(selectUserRegistrations)
+  const upcomingCount = registrations.filter((r) => !isPastEvent(r.event)).length
   const [menuOpen, setMenuOpen] = useState(false)
 
   const closeMenu = () => setMenuOpen(false)
@@ -48,6 +52,11 @@ function Navbar() {
           {user && (
             <NavLink to="/my-events" onClick={closeMenu}>
               My Events
+              {upcomingCount > 0 && (
+                <span className="navbar-badge" aria-label={`${upcomingCount} upcoming`}>
+                  {upcomingCount}
+                </span>
+              )}
             </NavLink>
           )}
 

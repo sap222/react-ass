@@ -78,3 +78,19 @@ export function getEventTimestamp(event) {
 export function isPastEvent(event) {
   return getEventTimestamp(event) < Date.now()
 }
+
+const DAY_MS = 24 * 60 * 60 * 1000
+
+// "Today", "Tomorrow", "In 5 days", "3 days ago"… based on the event's local date.
+export function getRelativeDayLabel(event) {
+  if (!event.localDate) return null
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const days = Math.round((parseLocalDate(event.localDate) - today) / DAY_MS)
+
+  if (days === 0) return 'Today'
+  if (days === 1) return 'Tomorrow'
+  if (days === -1) return 'Yesterday'
+  if (days > 1) return days < 60 ? `In ${days} days` : `In ${Math.round(days / 30)} months`
+  return -days < 60 ? `${-days} days ago` : `${Math.round(-days / 30)} months ago`
+}

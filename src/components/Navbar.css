@@ -50,6 +50,21 @@
   border-bottom-color: var(--primary);
 }
 
+.navbar-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 0.35rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+
 .navbar-auth {
   display: flex;
   align-items: center;
