@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getCategories, searchEvents } from '../../services/ticketmaster'
+import { getCategories, getEventById, searchEvents } from '../../services/ticketmaster'
 
 const initialState = {
   list: {
@@ -18,6 +18,12 @@ const initialState = {
     items: [],
     status: 'idle',
     error: null,
+  },
+  details: {
+    item: null,
+    status: 'idle',
+    error: null,
+    requestId: null,
   },
 }
 
@@ -61,6 +67,17 @@ export const fetchCategories = createAsyncThunk(
     }
   },
   { condition: notLoadedYet('categories') },
+)
+
+export const fetchEventDetails = createAsyncThunk(
+  'events/fetchDetails',
+  async (id, { signal, rejectWithValue }) => {
+    try {
+      return await getEventById(id, signal)
+    } catch (err) {
+      return rejectWithValue(err.message)
+    }
+  },
 )
 
 const eventsSlice = createSlice({
@@ -110,11 +127,29 @@ const eventsSlice = createSlice({
         state.categories.status = 'failed'
         state.categories.error = action.payload ?? 'Could not load categories.'
       })
+      .addCase(fetchEventDetails.pending, (state, action) => {
+        state.details.status = 'loading'
+        state.details.error = null
+        state.details.requestId = action.meta.requestId
+        // Drop the previous event so its data never flashes on a new page.
+        if (state.details.item?.id !== action.meta.arg) state.details.item = null
+      })
+      .addCase(fetchEventDetails.fulfilled, (state, action) => {
+        if (state.details.requestId !== action.meta.requestId) return
+        state.details.status = 'succeeded'
+        state.details.item = action.payload
+      })
+      .addCase(fetchEventDetails.rejected, (state, action) => {
+        if (action.meta.aborted || state.details.requestId !== action.meta.requestId) return
+        state.details.status = 'failed'
+        state.details.error = action.payload ?? 'Could not load this event.'
+      })
   },
 })
 
 export const selectEventList = (state) => state.events.list
 export const selectUpcomingEvents = (state) => state.events.upcoming
 export const selectCategories = (state) => state.events.categories
+export const selectEventDetails = (state) => state.events.details
 
 export default eventsSlice.reducer

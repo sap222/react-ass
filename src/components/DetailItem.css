@@ -1,0 +1,35 @@
+.detail-item {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.detail-item-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-soft);
+  font-size: 1.1rem;
+}
+
+.detail-item-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.detail-item-value {
+  font-weight: 500;
+}
+
+.detail-item-value small {
+  display: block;
+  color: var(--text-muted);
+  font-weight: 400;
+}

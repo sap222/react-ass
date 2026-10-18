@@ -160,3 +160,8 @@ export async function getCategories() {
     }))
     .sort((a, b) => a.name.localeCompare(b.name))
 }
+
+export async function getEventById(id, signal) {
+  const data = await request(`/events/${encodeURIComponent(id)}.json`, {}, signal)
+  return normalizeEvent(data)
+}

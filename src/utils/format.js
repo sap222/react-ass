@@ -49,3 +49,21 @@ export function formatPrice(priceRange) {
     ? format(priceRange.min)
     : `${format(priceRange.min)} – ${format(priceRange.max)}`
 }
+
+export function formatDateTime(isoString) {
+  if (!isoString) return null
+  return new Date(isoString).toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+}
+
+export function formatAddress(venue) {
+  if (!venue) return null
+  return [venue.address, venue.city, venue.state, venue.postalCode, venue.country]
+    .filter(Boolean)
+    .join(', ')
+}
