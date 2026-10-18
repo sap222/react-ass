@@ -151,3 +151,30 @@ select {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
+
+::selection {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Respect users who prefer less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    font-size: 15px;
+  }
+
+  .btn {
+    padding: 0.6rem 1rem;
+  }
+}
