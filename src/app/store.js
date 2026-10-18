@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer, { AUTH_STORAGE_KEY } from '../features/auth/authSlice'
+import eventsReducer from '../features/events/eventsSlice'
 import { saveState } from '../utils/storage'
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    events: eventsReducer,
   },
 })
 

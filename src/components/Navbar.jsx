@@ -42,6 +42,9 @@ function Navbar() {
           <NavLink to="/" end onClick={closeMenu}>
             Home
           </NavLink>
+          <NavLink to="/events" onClick={closeMenu}>
+            Events
+          </NavLink>
           {user && (
             <NavLink to="/my-events" onClick={closeMenu}>
               My Events

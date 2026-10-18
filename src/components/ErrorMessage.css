@@ -1,0 +1,29 @@
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.25rem;
+  padding: 2.5rem 1.5rem;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(255, 92, 122, 0.3);
+  border-radius: var(--radius);
+}
+
+.error-message-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 0.5rem;
+  border-radius: 50%;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+
+.error-message p {
+  color: var(--text-muted);
+  max-width: 420px;
+}

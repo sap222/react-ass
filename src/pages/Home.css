@@ -42,3 +42,20 @@
   justify-content: center;
   flex-wrap: wrap;
 }
+
+.home-section {
+  padding-top: 3rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+}
