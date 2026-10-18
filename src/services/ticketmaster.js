@@ -97,25 +97,40 @@ export function normalizeEvent(event) {
 }
 
 export async function searchEvents(
-  { keyword, segmentId, city, countryCode, startDate, endDate, sort = 'date,asc', page = 0, size = 12 } = {},
+  {
+    keyword,
+    segmentId,
+    genreId,
+    city,
+    countryCode,
+    startDate,
+    endDate,
+    sort = 'date,asc',
+    page = 0,
+    size = 12,
+  } = {},
   signal,
 ) {
-  // Only show upcoming events: never search earlier than "now".
-  const now = new Date()
-  const start = startDate ? new Date(`${startDate}T00:00:00`) : now
+  // Date filters use the venue's local time, so "Nov 1" means Nov 1 wherever the event is.
+  const localRange =
+    startDate || endDate
+      ? `${startDate || toApiDateTime(new Date()).slice(0, 10)}T00:00:00,${endDate ? `${endDate}T23:59:59` : '*'}`
+      : undefined
 
   const data = await request(
     '/events.json',
     {
       keyword,
       segmentId,
+      genreId,
       city,
       countryCode,
       sort,
       page,
       size,
-      startDateTime: toApiDateTime(start < now ? now : start),
-      endDateTime: endDate ? toApiDateTime(new Date(`${endDate}T23:59:59`)) : undefined,
+      // Always exclude events that have already started.
+      startDateTime: toApiDateTime(new Date()),
+      localStartDateTime: localRange,
     },
     signal,
   )
@@ -128,4 +143,20 @@ export async function searchEvents(
       totalPages: Math.min(data.page?.totalPages ?? 0, Math.floor(MAX_RESULTS / size)),
     },
   }
+}
+
+// Segments (Music, Sports, ...) are the top-level categories; genres sit underneath.
+export async function getCategories() {
+  const data = await request('/classifications.json', { size: 50 })
+  return (data._embedded?.classifications ?? [])
+    .filter((c) => c.segment && validName(c.segment.name))
+    .map(({ segment }) => ({
+      id: segment.id,
+      name: segment.name,
+      genres: (segment._embedded?.genres ?? [])
+        .filter((g) => validName(g.name))
+        .map((g) => ({ id: g.id, name: g.name }))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
 }

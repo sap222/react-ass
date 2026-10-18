@@ -1,0 +1,30 @@
+.category-chips {
+  display: flex;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.category-chip {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.category-chip:hover {
+  text-decoration: none;
+  background: var(--surface-hover);
+}
+
+.category-chip.is-active {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
